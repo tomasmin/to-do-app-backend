@@ -29,7 +29,7 @@ class Task(db.Model, JsonModel):
 def submit():
     name = request.json.get('name')
     description = request.json.get('description')
-    if name == '':
+    if name == '' or name.isspace():
         return jsonify(name ='Name cannot be empty'), 400
     if len(name)>100:
         return jsonify(name ='Name is too long'), 400
@@ -37,7 +37,7 @@ def submit():
         data = Task(name, description)
         db.session.add(data)
         db.session.commit()
-        return json.dumps([u.as_dict() for u in Task.query.all()])
+        return json.dumps([u.as_dict() for u in Task.query.all()]), 201
     return jsonify(name ='Task with the same name already exists'), 400
 
 @app.route('/tasks', methods = ['GET'])
